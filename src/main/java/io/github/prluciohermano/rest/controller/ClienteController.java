@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.github.prluciohermano.domain.entity.Cliente;
+import io.github.prluciohermano.domain.entity.Produto;
 import io.github.prluciohermano.domain.repository.Clientes;
 
 @RestController
@@ -30,7 +32,7 @@ public class ClienteController {
 		this.clientes = clientes;
 	}
 	
-	@GetMapping(value = "{id}")
+	@GetMapping("{id}")  /* ******* Buscar cliente por ID */
 	@ResponseBody
 	public Cliente getClienteById( @PathVariable Integer id){
 		return clientes
@@ -40,13 +42,13 @@ public class ClienteController {
 									"Cliente não encontrado"));
 	}
 		
-	@PostMapping
+	@PostMapping  /* **********************  Salvar Cliente */
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente save( @RequestBody Cliente cliente ) {
 		return clientes.save(cliente);
 	}
 	
-	@DeleteMapping("{id}")
+	@DeleteMapping("{id}")  /* ************* Deletar Cliente */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete( @PathVariable Integer id) {
 		clientes.findById(id)
@@ -58,11 +60,10 @@ public class ClienteController {
 							"Cliente não encontrado") );
 	}
 	
-	@PutMapping("{id}")
+	@PutMapping("{id}")  /* **************** Atualizar um Cliente */
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void update( @PathVariable Integer id,
-						@RequestBody Cliente cliente){
+	public void update( @PathVariable Integer id, @RequestBody Cliente cliente){
 		clientes
 				.findById(id)
 				.map( clienteExistente -> {
@@ -73,18 +74,10 @@ public class ClienteController {
 						"Cliente não encontrado") );
 	}
 	
-	@SuppressWarnings("unchecked")
 	@GetMapping
-	public List<Cliente> find(Cliente filtro){
-		ExampleMatcher matcher = ExampleMatcher
-				.matching()
-				.withIgnoreCase()
-				.withStringMatcher(
-						ExampleMatcher.StringMatcher.CONTAINING);
-		@SuppressWarnings("rawtypes")
-		Example example = Example.of(filtro, matcher);
-		return clientes.findAll(example);
-		
-	}
+	@ResponseBody
+	public ResponseEntity<List<Cliente>> find(){
+		 return ResponseEntity.status(HttpStatus.OK).body(clientes.findAll());
+	 }
 			
 }
