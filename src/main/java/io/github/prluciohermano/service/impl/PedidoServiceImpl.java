@@ -2,6 +2,7 @@ package io.github.prluciohermano.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -12,13 +13,15 @@ import io.github.prluciohermano.domain.entity.Cliente;
 import io.github.prluciohermano.domain.entity.ItemPedido;
 import io.github.prluciohermano.domain.entity.Pedido;
 import io.github.prluciohermano.domain.entity.Produto;
+import io.github.prluciohermano.domain.enums.StatusPedido;
 import io.github.prluciohermano.domain.repository.Clientes;
 import io.github.prluciohermano.domain.repository.ItemsPedido;
 import io.github.prluciohermano.domain.repository.Pedidos;
 import io.github.prluciohermano.domain.repository.Produtos;
+import io.github.prluciohermano.exception.PedidoNaoEncontradoException;
 import io.github.prluciohermano.exception.RegraNegocioException;
-import io.github.prluciohermano.rest.ItemPedidoDTO;
-import io.github.prluciohermano.rest.PedidoDTO;
+import io.github.prluciohermano.rest.dto.ItemPedidoDTO;
+import io.github.prluciohermano.rest.dto.PedidoDTO;
 import io.github.prluciohermano.service.PedidoService;
 import lombok.RequiredArgsConstructor;
 
@@ -42,12 +45,30 @@ public class PedidoServiceImpl implements PedidoService {
 		pedido.setTotal(dto.getTotal());
 		pedido.setDataPedido(LocalDate.now());
 		pedido.setCliente(cliente);
+		pedido.setStatus(StatusPedido.REALIZADO);
 		
 		List<ItemPedido> itemsPedido =  converterItems(pedido, dto.getItems());
 		repository.save(pedido);
 		itemsPedidoRepository.saveAll(itemsPedido);
 		pedido.setItens(itemsPedido);
 		return pedido;
+	}
+	
+	@Override
+	public Optional<Pedido> obterPedidoCompleto( Integer id ) {
+		return repository.findByIdFetchItens(id);
+	}
+
+	@Override
+	@Transactional
+	public void atualizarStatus( Integer id, StatusPedido statusPedido ) {
+		repository
+				.findById(id)
+				.map( pedido -> {
+					pedido.setStatus(statusPedido);
+					return repository.save(pedido);
+				}).orElseThrow( () -> new PedidoNaoEncontradoException());
+		
 	}
 	
 	private List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDTO> items) {
@@ -72,4 +93,6 @@ public class PedidoServiceImpl implements PedidoService {
 					return itemPedido;
 				}).collect(Collectors.toList());
 	}
+
+
 }

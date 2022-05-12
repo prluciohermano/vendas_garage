@@ -1,14 +1,15 @@
 package io.github.prluciohermano.rest.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.github.prluciohermano.exception.PedidoNaoEncontradoException;
 import io.github.prluciohermano.exception.RegraNegocioException;
 import io.github.prluciohermano.rest.ApiErrors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ApplicationControllerAdvice {
 
 	@ExceptionHandler(RegraNegocioException.class)
@@ -18,4 +19,9 @@ public class ApplicationControllerAdvice {
 		return new ApiErrors(mensagemErro);
 	}
 	
+	@ExceptionHandler(PedidoNaoEncontradoException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiErrors handlePedidoNotFoundException(PedidoNaoEncontradoException ex) {
+		return new ApiErrors(ex.getMessage());
+	}
 }

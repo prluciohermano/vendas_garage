@@ -1,4 +1,4 @@
-package io.github.prluciohermano.rest;
+package io.github.prluciohermano.rest.dto;
 
 import java.math.BigDecimal;
 import java.util.List;

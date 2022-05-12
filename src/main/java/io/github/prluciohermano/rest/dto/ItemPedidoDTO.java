@@ -1,4 +1,4 @@
-package io.github.prluciohermano.rest;
+package io.github.prluciohermano.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

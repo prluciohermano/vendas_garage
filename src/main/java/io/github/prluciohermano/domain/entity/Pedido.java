@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.github.prluciohermano.domain.enums.StatusPedido;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,6 +43,10 @@ public class Pedido {
 	@Column(precision = 20, scale = 2)
 	private BigDecimal total;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status")
+	private StatusPedido status;
+	
 	@OneToMany(mappedBy = "pedido")
 	private List<ItemPedido> itens;
 	
@@ -50,3 +57,5 @@ public class Pedido {
 		return itens;
 	}
 }
+/* Quando for acrescentar algum atributo precisa seguir os passos do video 55
+ *  da aula do Curso de spring-boot-especialista da Udemy*/
