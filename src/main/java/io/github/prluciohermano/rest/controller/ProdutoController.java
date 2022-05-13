@@ -6,8 +6,10 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import javax.validation.Valid;
+
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,13 +36,15 @@ public class ProdutoController {
 
 	@PostMapping
 	@ResponseStatus(CREATED)
-	public Produto save( @RequestBody Produto produto) {
+	public Produto save( @RequestBody @Valid Produto produto) {
 		return repository.save(produto);
 	}
 
 	@PutMapping("{id}")
 	@ResponseStatus(NO_CONTENT)
-	public void update( @PathVariable Integer id, @RequestBody Produto produto ) {
+	public void update( @PathVariable Integer id, 
+						@RequestBody
+						@Valid Produto produto ) {
 		repository
 			.findById(id)
 			.map( p -> {
@@ -71,9 +75,21 @@ public class ProdutoController {
 					"Cliente não encontrado") );
 	}
 	
+	@GetMapping
+	public List<Produto> find(Produto filtro){
+		ExampleMatcher matcher = ExampleMatcher
+				.matching()
+				.withIgnoreCase()
+				.withStringMatcher(
+						ExampleMatcher.StringMatcher.CONTAINING);
+		Example example = Example.of(filtro, matcher);
+		return repository.findAll(example);
+	}
+	
+	/*
 	 @GetMapping
 	 public ResponseEntity<List<Produto>> find(){
 		 return ResponseEntity.status(HttpStatus.OK).body(repository.findAll());
 	 }
-	 
+	 */
 }
