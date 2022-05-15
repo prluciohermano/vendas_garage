@@ -25,34 +25,33 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
-	
-	private final UsuarioServiceImpl usuarioService;
-	private final PasswordEncoder passwordEncoder;
-	private final JwtService jwtService;
-	
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Usuario salvar(@RequestBody @Valid Usuario usuario) {
-		String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
-		usuario.setSenha(senhaCriptografada);
-		return usuarioService.salvar(usuario);
+
+    private final UsuarioServiceImpl usuarioService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Usuario salvar( @RequestBody @Valid Usuario usuario ){
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        usuario.setSenha(senhaCriptografada);
+        return usuarioService.salvar(usuario);
+    }
+
+    @PostMapping("/auth")
+    public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais){
+        try{
+            Usuario usuario = Usuario.builder()
+                    .login(credenciais.getLogin())
+                    .senha(credenciais.getSenha()).build();
+            UserDetails usuarioAutenticado = usuarioService.autenticar(usuario);
+            String token = jwtService.gerarToken(usuario);
+            return new TokenDTO(usuario.getLogin(), token);
+        } catch (UsernameNotFoundException | SenhaInvalidaException e ){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+		
 	}
 	
-	@PostMapping("/auth")
-	public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais) {
-		try {
-			
-				Usuario usuario = Usuario.builder()
-						.login(credenciais.getLogin())
-						.senha(credenciais.getSenha()).build();
-			@SuppressWarnings("unused")
-			UserDetails usuarioAutenticado = usuarioService.autenticar(usuario);
-			String token = jwtService.gerarToken(usuario);
-			return new TokenDTO(usuario.getLogin(), token);
-			
-		} catch (UsernameNotFoundException | SenhaInvalidaException e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-			
-		}
-	}
-}
+
