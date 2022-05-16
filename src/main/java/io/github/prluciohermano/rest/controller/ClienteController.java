@@ -25,7 +25,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 58da461f51bdd56a6f1915e43a0a551db87e3036
 
 @RestController
 @RequestMapping("/api/clientes")
