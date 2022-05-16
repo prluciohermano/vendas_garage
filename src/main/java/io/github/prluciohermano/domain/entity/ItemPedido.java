@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
 	@Data
 	@AllArgsConstructor
 	@NoArgsConstructor
@@ -39,29 +38,5 @@ import lombok.NoArgsConstructor;
 
 	    @Column
 	    private Integer quantidade;
-=======
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@Entity
-@Table(name = "item_pedido")
-public class ItemPedido {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	@ManyToOne()
-	@JoinColumn(name = "pedido_id")
-	private Pedido pedido;
-	
-	@ManyToOne()
-	@JoinColumn(name = "produto_id")
-	private Produto produto;
-	
-	@Column
-	private Integer quantidade;
->>>>>>> 58da461f51bdd56a6f1915e43a0a551db87e3036
-	
 	
 }
