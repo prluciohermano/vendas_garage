@@ -58,5 +58,4 @@ public class Pedido {
 		return itens;
 	}
 }
-/* Quando for acrescentar algum atributo precisa seguir os passos do video 55
- *  da aula do Curso de spring-boot-especialista da Udemy*/
+

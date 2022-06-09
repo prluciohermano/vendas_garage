@@ -56,7 +56,7 @@ public class ClienteController {
 		
 	@PostMapping  /* *****************************************************  Salvar Cliente */
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation("Salva um novo cliente")
+	@ApiOperation("Cria um novo cliente")
 	@ApiResponses({
 		@ApiResponse(code = 201, message = "Cliente salvo com sucesso"),
 		@ApiResponse(code = 400, message = "Erro de validação")

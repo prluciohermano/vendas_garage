@@ -21,8 +21,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.github.prluciohermano.domain.entity.Cliente;
 import io.github.prluciohermano.domain.entity.Produto;
 import io.github.prluciohermano.domain.repository.Produtos;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -34,14 +38,24 @@ public class ProdutoController {
 		this.repository = repository;
 	}
 
-	@PostMapping
+	@PostMapping /* *****************************************************  Salvar Produto */
 	@ResponseStatus(CREATED)
+	@ApiOperation("Cria um novo produto")
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "Produto salvo com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
 	public Produto save( @RequestBody @Valid Produto produto) {
 		return repository.save(produto);
 	}
 
-	@PutMapping("{id}")
+	@PutMapping("{id}") /* ************************************************ Atualizar um Produto */
 	@ResponseStatus(NO_CONTENT)
+	@ApiOperation("Altera os dados de um produto")
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "Produto alterado com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
 	public void update( @PathVariable Integer id, 
 						@RequestBody
 						@Valid Produto produto ) {
@@ -55,8 +69,13 @@ public class ProdutoController {
 				"Cliente não encontrado") );
 	}
 	
-	@DeleteMapping("{id}")
+	@DeleteMapping("{id}")  /* ********************************************* Deletar um Produto */
 	@ResponseStatus(NO_CONTENT)
+	@ApiOperation("Deleta um produto")
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "Produto deletado com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
 	public void delete(@PathVariable Integer id) {
 		repository
 			.findById(id)
@@ -67,7 +86,12 @@ public class ProdutoController {
 				"Cliente não encontrado") );
 	}
 	
-	@GetMapping("{id}")
+	@GetMapping("{id}") /* ************************************************ Buscar produto por ID */
+	@ApiOperation("Obter detalhes de um produto pelo ID")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Produto encontrado"),
+		@ApiResponse(code = 404, message = "Produto não encontrado para o ID informado")
+	})
 	public Produto getById(@PathVariable Integer id) {
 		return repository
 				.findById(id)
@@ -76,6 +100,11 @@ public class ProdutoController {
 	}
 	
 	@GetMapping
+	@ApiOperation("Busca produtos por parâmetros")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Produto encontrado com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
 	public List<Produto> find(Produto filtro){
 		ExampleMatcher matcher = ExampleMatcher
 				.matching()
@@ -86,10 +115,13 @@ public class ProdutoController {
 		return repository.findAll(example);
 	}
 	
-	/*
-	 @GetMapping
-	 public ResponseEntity<List<Produto>> find(){
-		 return ResponseEntity.status(HttpStatus.OK).body(repository.findAll());
-	 }
-	 */
+	@GetMapping("/todos") /* ************************************************ Busca todos os produtos */
+	@ApiOperation("Busca todos os produtos")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Clientes encontrados com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
+	    public List<Produto> findAll( Produto filtro ){
+			return repository.findAll();
+		}
 }

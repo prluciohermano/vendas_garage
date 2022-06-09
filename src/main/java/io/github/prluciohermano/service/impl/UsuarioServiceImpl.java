@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.prluciohermano.domain.entity.Usuario;
-import io.github.prluciohermano.domain.repository.UsuarioRepository;
+import io.github.prluciohermano.domain.repository.Usuarios;
 import io.github.prluciohermano.exception.SenhaInvalidaException;
 
 @Service
@@ -20,7 +20,7 @@ public class UsuarioServiceImpl implements UserDetailsService {
     private PasswordEncoder encoder;
 
     @Autowired
-    private UsuarioRepository repository;
+    private Usuarios repository;
 
     @Transactional
     public Usuario salvar(Usuario usuario){

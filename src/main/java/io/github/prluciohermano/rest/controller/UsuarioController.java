@@ -14,6 +14,9 @@ import io.github.prluciohermano.rest.dto.CredenciaisDTO;
 import io.github.prluciohermano.rest.dto.TokenDTO;
 import io.github.prluciohermano.security.jwt.JwtService;
 import io.github.prluciohermano.service.impl.UsuarioServiceImpl;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import javax.validation.Valid;
 
@@ -28,6 +31,11 @@ public class UsuarioController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Cria um novo Usuário")
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "Usuário salvo com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
     public Usuario salvar( @RequestBody @Valid Usuario usuario ){
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
         usuario.setSenha(senhaCriptografada);
@@ -35,6 +43,11 @@ public class UsuarioController {
     }
 
     @PostMapping("/auth")
+    @ApiOperation("Autentica Usuário no sistema")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Usuário Autenticado"),
+		@ApiResponse(code = 404, message = "Usuário não encontrado para o nome informado")
+	})
     public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais){
         try{
             Usuario usuario = Usuario.builder()

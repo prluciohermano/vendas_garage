@@ -27,6 +27,9 @@ import io.github.prluciohermano.rest.dto.InformacoesItemPedidoDTO;
 import io.github.prluciohermano.rest.dto.InformacoesPedidoDTO;
 import io.github.prluciohermano.rest.dto.PedidoDTO;
 import io.github.prluciohermano.service.PedidoService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -40,12 +43,22 @@ public class PedidoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation("Cria um novo pedido")
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "Pedido salvo com sucesso"),
+		@ApiResponse(code = 400, message = "Erro de validação")
+	})
 	public Integer save( @RequestBody @Valid PedidoDTO dto ) {
 		Pedido pedido = service.salvar(dto);
 		return pedido.getId();	
 	}
 	
 	@GetMapping("{id}")
+	@ApiOperation("Obter detalhes de um pedido por ID")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Pedido encontrado"),
+		@ApiResponse(code = 404, message = "Pedido não encontrado para o ID informado")
+	})
 	public InformacoesPedidoDTO getById(@PathVariable Integer id) {
 		return service
 				.obterPedidoCompleto(id)
@@ -56,6 +69,11 @@ public class PedidoController {
 	}
 	
 	@PatchMapping("{id}")
+	 @ApiOperation("Atualiza o Status do pedido")
+		@ApiResponses({
+			@ApiResponse(code = 200, message = "Status Atualizado"),
+			@ApiResponse(code = 404, message = "Status não encontrado ou não atualizado")
+		})
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateStatus(@PathVariable Integer id,
 							 @RequestBody AtualizacaoStatusPedidoDTO dto) {
