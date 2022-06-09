@@ -1,6 +1,6 @@
 package io.github.prluciohermano.service.impl;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +43,7 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		Pedido pedido = new Pedido();
 		pedido.setTotal(dto.getTotal());
-		pedido.setDataPedido(LocalDate.now());
+		pedido.setDataPedido(LocalDateTime.now());
 		pedido.setCliente(cliente);
 		pedido.setStatus(StatusPedido.REALIZADO);
 		

@@ -2,6 +2,7 @@ package io.github.prluciohermano.domain.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class Pedido {
 	private Cliente cliente;
 	
 	@Column(name = "data_pedido")
-	private LocalDate dataPedido;
+	private LocalDateTime dataPedido;
 	
 	@Column(precision = 20, scale = 2)
 	private BigDecimal total;

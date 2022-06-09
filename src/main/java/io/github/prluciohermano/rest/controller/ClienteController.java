@@ -38,7 +38,7 @@ public class ClienteController {
 		this.clientes = clientes;
 	}
 	
-	@GetMapping("{id}")  /* ******* Buscar cliente por ID */
+	@GetMapping("{id}")  /* ***************************************** Buscar cliente por ID */
 	@ApiOperation("Obter detalhes de um cliente puxando pelo ID")
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Cliente encontrado"),
@@ -54,7 +54,7 @@ public class ClienteController {
 									"Cliente não encontrado"));
 	}
 		
-	@PostMapping  /* **********************  Salvar Cliente */
+	@PostMapping  /* *****************************************************  Salvar Cliente */
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Salva um novo cliente")
 	@ApiResponses({
@@ -65,7 +65,7 @@ public class ClienteController {
 		return clientes.save(cliente);
 	}
 	
-	@DeleteMapping("{id}")  /* ************* Deletar Cliente */
+	@DeleteMapping("{id}")  /* ********************************************* Deletar Cliente */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Deleta um cliente")
 	@ApiResponses({
@@ -82,7 +82,7 @@ public class ClienteController {
 							"Cliente não encontrado") );
 	}
 	
-	@PutMapping("{id}")  /* **************** Atualizar um Cliente */
+	@PutMapping("{id}")  /* ************************************************ Atualizar um Cliente */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Altera os dados de um cliente")
 	@ApiResponses({
@@ -101,8 +101,9 @@ public class ClienteController {
 						"Cliente não encontrado") );
 	}
 	
-	 @SuppressWarnings("unchecked")
-	@GetMapping
+	
+	
+	@GetMapping /************************************* Busca cliente por parâmetros */
 	@ApiOperation("Busca um cliente por parâmetros")
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Cliente encontrado com sucesso"),
@@ -110,14 +111,25 @@ public class ClienteController {
 	})
 	    public List<Cliente> find( Cliente filtro ){
 	        ExampleMatcher matcher = ExampleMatcher
-	                                    .matching()
-	                                    .withIgnoreCase()
-	                                    .withStringMatcher(
-	                                            ExampleMatcher.StringMatcher.CONTAINING );
-
-	        @SuppressWarnings("rawtypes")
-			Example example = Example.of(filtro, matcher);
-	        return clientes.findAll(example);
+	        		.matching().withIgnoreCase()
+	                .withStringMatcher(
+	                		ExampleMatcher.StringMatcher.CONTAINING );
+	        
+	        Example example = Example.of(filtro, matcher);
+			return clientes.findAll(example);
 	    }
+	
+		
+		@GetMapping("/todos") /* ************************************************ Busca todos os clientes */
+		@ApiOperation("Busca todos os clientes")
+		@ApiResponses({
+			@ApiResponse(code = 200, message = "Clientes encontrados com sucesso"),
+			@ApiResponse(code = 400, message = "Erro de validação")
+		})
+		    public List<Cliente> findAll( Cliente filtro ){
+				return clientes.findAll();
+			}
+
+	 
 			
 }
