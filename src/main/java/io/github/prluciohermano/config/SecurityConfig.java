@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.github.prluciohermano.security.jwt.JwtAuthFilter;
@@ -47,16 +48,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure( HttpSecurity http ) throws Exception {
         http
             .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/api/clientes/**")
-                    .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/pedidos/**")
-                    .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/produtos/**")
-                    .hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/usuarios/**")
-                    .permitAll()
-                .anyRequest().authenticated()
+            .authorizeRequests().antMatchers("/login").permitAll()
+            .antMatchers("/api/pedidos/**").hasAnyRole("USER", "ADMIN")
+            .antMatchers("/api/produtos/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+            .antMatchers("/index*").permitAll()
+            .antMatchers("/**").permitAll()
+//            .antMatchers("/logout").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/usuarios/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/login").permitAll() 
+//              .antMatchers("/webapp/**").permitAll()
+//              .antMatchers("/webapp/pages/**").permitAll()
+            .anyRequest().authenticated()
+            .and().formLogin().loginPage("/login").permitAll()
+            .defaultSuccessUrl("/arearestrita")
+            .and()
+            .logout().invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutRequestMatcher(new AntPathRequestMatcher("/login?logout=true"))
+            .logoutSuccessUrl("/login?logout=true").permitAll()
+                   
             .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -64,10 +75,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore( jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         ;
     }
-
+    
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
+        		"/static/",
+        		"/resources/static/estilo/**",
+        		"/css/**", "/js/", "/img/**",
                 "/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
@@ -75,5 +89,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui.html",
                 "/webjars/**");
     }
-
 }

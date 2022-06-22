@@ -48,7 +48,7 @@ public class PedidoController {
 		@ApiResponse(code = 201, message = "Pedido salvo com sucesso"),
 		@ApiResponse(code = 400, message = "Erro de validação")
 	})
-	public Integer save( @RequestBody @Valid PedidoDTO dto ) {
+	public Long save( @RequestBody @Valid PedidoDTO dto ) {
 		Pedido pedido = service.salvar(dto);
 		return pedido.getId();	
 	}
@@ -59,7 +59,7 @@ public class PedidoController {
 		@ApiResponse(code = 200, message = "Pedido encontrado"),
 		@ApiResponse(code = 404, message = "Pedido não encontrado para o ID informado")
 	})
-	public InformacoesPedidoDTO getById(@PathVariable Integer id) {
+	public InformacoesPedidoDTO getById(@PathVariable Long id) {
 		return service
 				.obterPedidoCompleto(id)
 				.map( p -> converter(p) )
@@ -75,7 +75,7 @@ public class PedidoController {
 			@ApiResponse(code = 404, message = "Status não encontrado ou não atualizado")
 		})
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateStatus(@PathVariable Integer id,
+	public void updateStatus(@PathVariable Long id,
 							 @RequestBody AtualizacaoStatusPedidoDTO dto) {
 		String novoStatus = dto.getNovoStatus();
 		service.atualizarStatus(id, StatusPedido.valueOf(novoStatus));
@@ -86,8 +86,8 @@ public class PedidoController {
 				.builder()
 				.codigo(pedido.getId())
 				.dataPedido(pedido.getDataPedido().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
-				.cpf(pedido.getCliente().getCpf())
-				.nomeCliente(pedido.getCliente().getNome())
+				.cpf(pedido.getPessoa().getCpf())
+				.nomePessoa(pedido.getPessoa().getNome())
 				.total(pedido.getTotal())
 				.status(pedido.getStatus().name())
 				.items(converter(pedido.getItens()))

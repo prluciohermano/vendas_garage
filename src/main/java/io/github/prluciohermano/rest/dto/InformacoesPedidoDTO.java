@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class InformacoesPedidoDTO {
-	private Integer codigo;
+	private Long codigo;
 	private String cpf;
-	private String nomeCliente;
+	private String nomePessoa;
 	private BigDecimal total;
 	private String dataPedido;
 	private String status;

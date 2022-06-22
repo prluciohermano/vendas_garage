@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    @Column(name = "id")
-	    private Integer id;
+	    private Long id;
 
 	    @ManyToOne
 	    @JoinColumn(name = "pedido_id")
@@ -37,6 +37,7 @@ import lombok.NoArgsConstructor;
 	    private Produto produto;
 
 	    @Column
-	    private Integer quantidade;
+	    private Long quantidade;
+
 	
 }

@@ -9,7 +9,7 @@ import io.github.prluciohermano.rest.dto.PedidoDTO;
 public interface PedidoService {
 	Pedido salvar( PedidoDTO dto );
 	
-	Optional<Pedido> obterPedidoCompleto(Integer id);
+	Optional<Pedido> obterPedidoCompleto(Long id);
 	
-	void atualizarStatus(Integer id, StatusPedido statusPedido);
+	void atualizarStatus(Long id, StatusPedido statusPedido);
 }

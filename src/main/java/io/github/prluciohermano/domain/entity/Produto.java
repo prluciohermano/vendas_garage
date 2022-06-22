@@ -1,5 +1,6 @@
 package io.github.prluciohermano.domain.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
@@ -20,11 +21,13 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "produto")
-public class Produto {
+public class Produto implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
 	@Column(length = 100)
 	@NotEmpty(message = "{campo.descricao.obrigatorio}")

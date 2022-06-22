@@ -15,5 +15,5 @@ public class InformacoesItemPedidoDTO {
 
 	private String descricaoProduto;
 	private BigDecimal precoUnitario;
-	private Integer quantidade;
+	private Long quantidade;
 }

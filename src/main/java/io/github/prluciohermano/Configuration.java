@@ -7,6 +7,6 @@ public class Configuration {
 
 	@Bean(name = "applicationName")
 	public String applicationName() {
-		return "Sistema de Vendas";
+		return "Sistema de Controle de Carros";
 	}
 }

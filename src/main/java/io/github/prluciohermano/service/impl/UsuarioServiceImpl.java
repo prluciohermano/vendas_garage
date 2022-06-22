@@ -1,5 +1,7 @@
 package io.github.prluciohermano.service.impl;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,10 +9,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.github.prluciohermano.domain.entity.Usuario;
-import io.github.prluciohermano.domain.repository.Usuarios;
+import io.github.prluciohermano.domain.repository.UsuarioRepository;
 import io.github.prluciohermano.exception.SenhaInvalidaException;
 
 @Service
@@ -20,7 +21,7 @@ public class UsuarioServiceImpl implements UserDetailsService {
     private PasswordEncoder encoder;
 
     @Autowired
-    private Usuarios repository;
+    private UsuarioRepository repository;
 
     @Transactional
     public Usuario salvar(Usuario usuario){
@@ -53,4 +54,5 @@ public class UsuarioServiceImpl implements UserDetailsService {
                 .roles(roles)
                 .build();
     }
+
 }

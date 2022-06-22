@@ -1,7 +1,6 @@
 package io.github.prluciohermano.domain.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +31,11 @@ public class Pedido {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
 	@ManyToOne()
-	@JoinColumn(name = "cliente_id")
-	private Cliente cliente;
+	@JoinColumn(name = "pessoa_id")
+	private Pessoa pessoa;
 	
 	@Column(name = "data_pedido")
 	private LocalDateTime dataPedido;

@@ -9,14 +9,14 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import io.github.prluciohermano.domain.entity.Cliente;
 import io.github.prluciohermano.domain.entity.ItemPedido;
 import io.github.prluciohermano.domain.entity.Pedido;
+import io.github.prluciohermano.domain.entity.Pessoa;
 import io.github.prluciohermano.domain.entity.Produto;
 import io.github.prluciohermano.domain.enums.StatusPedido;
-import io.github.prluciohermano.domain.repository.Clientes;
 import io.github.prluciohermano.domain.repository.ItemsPedido;
 import io.github.prluciohermano.domain.repository.Pedidos;
+import io.github.prluciohermano.domain.repository.Pessoas;
 import io.github.prluciohermano.domain.repository.Produtos;
 import io.github.prluciohermano.exception.PedidoNaoEncontradoException;
 import io.github.prluciohermano.exception.RegraNegocioException;
@@ -30,21 +30,21 @@ import lombok.RequiredArgsConstructor;
 public class PedidoServiceImpl implements PedidoService {
 
 	private final Pedidos repository;
-	private final Clientes clientesRepository;
+	private final Pessoas pessoasRepository;
 	private final Produtos produtosRepository;
 	private final ItemsPedido itemsPedidoRepository;
 	
 	@Override
 	@Transactional
 	public Pedido salvar(PedidoDTO dto) {
-		Integer idCliente = dto.getCliente();
-		Cliente cliente = clientesRepository.findById(idCliente)
-		.orElseThrow( () -> new RegraNegocioException("Código de cliente inválido."));
+		Long idPessoa = dto.getPessoa();
+		Pessoa pessoa = pessoasRepository.findById(idPessoa)
+		.orElseThrow( () -> new RegraNegocioException("Código de pessoa inválido."));
 		
 		Pedido pedido = new Pedido();
 		pedido.setTotal(dto.getTotal());
 		pedido.setDataPedido(LocalDateTime.now());
-		pedido.setCliente(cliente);
+		pedido.setPessoa(pessoa);
 		pedido.setStatus(StatusPedido.REALIZADO);
 		
 		List<ItemPedido> itemsPedido =  converterItems(pedido, dto.getItems());
@@ -54,14 +54,11 @@ public class PedidoServiceImpl implements PedidoService {
 		return pedido;
 	}
 	
-	@Override
-	public Optional<Pedido> obterPedidoCompleto( Integer id ) {
+	public Optional<Pedido> obterPedidoCompleto( Long id ) {
 		return repository.findByIdFetchItens(id);
 	}
 
-	@Override
-	@Transactional
-	public void atualizarStatus( Integer id, StatusPedido statusPedido ) {
+	public void atualizarStatus( Long id, StatusPedido statusPedido ) {
 		repository
 				.findById(id)
 				.map( pedido -> {
@@ -79,7 +76,7 @@ public class PedidoServiceImpl implements PedidoService {
 		return items
 				.stream()
 				.map( dto -> {
-					Integer idProduto = dto.getProduto();
+					Long idProduto = dto.getProduto();
 					Produto produto = produtosRepository
 							.findById(idProduto)
 							.orElseThrow(
@@ -93,6 +90,5 @@ public class PedidoServiceImpl implements PedidoService {
 					return itemPedido;
 				}).collect(Collectors.toList());
 	}
-
 
 }

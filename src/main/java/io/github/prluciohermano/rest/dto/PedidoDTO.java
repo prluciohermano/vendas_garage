@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class PedidoDTO {
 	
-	@NotNull(message = "{campo.codigo-cliente.obrigatorio}")
-	private Integer cliente;
+	@NotNull(message = "{campo.codigo-pessoa.obrigatorio}")
+	private Long pessoa;
 	
 	@NotNull(message = "{campo.total-pedido.obrigatorio}")
 	private BigDecimal total;

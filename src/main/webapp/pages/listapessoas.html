@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Lista de Pessoas</title>
+
+    <!-- Bootstrap CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+ 
+    <link rel="stylesheet" href="/estilo/css/styles.css">
+    <link rel="stylesheet" href="/estilo/css/bootstrap.min.css">
+    
+<style type="text/css">
+		
+ 			body {  
+ 				background-color: rgba(240, 240, 240, 1);  
+			}  
+ 			
+ 			.caixa {
+				width: 100%;
+				height: 100vh;
+				display: flex; 
+				justify-content: center;
+				align-items: center;
+			}
+			
+			.caixa2 {
+				margin: 10px;
+				width: 100%;
+				height: 100vh;
+				display: flex; 
+				justify-content: center;
+				align-items: top;
+/* 				background-color: rgba(200, 200, 200, 1); */
+			}
+			
+			.image-background {
+				position: absolute;
+			    width: 100vw;
+			    height: 100vh;
+			    z-index: -1;
+			}
+			
+			.card {
+			    background: #ffffffad;
+			    padding: 30px;
+			    border-radius: 10px;
+/* 			    border-color: black; */
+			}
+			
+			.centered2 {
+				display: block;
+				margin: 0px auto;
+				padding: 0px;
+			}	
+			
+			.rounded-circle {
+			width: 100px;
+			height: 80px;
+			
+			}
+			
+			.home-bar {
+			width: 50px;
+			height: 50px;
+			
+			}
+			
+			.pesq-nav {
+			background-color: rgba(200, 200, 200, 1); 
+			padding:  5px;
+			margin: 2px;
+			border-color: black;
+			align-items: center;
+			align-content: center;
+			}
+			
+	
+		</style>
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+ <div class="container-fluid">
+<!--  <img src="estilo/img/carro1.jpg" class="rounded-circle home-bar"> -->
+    <a class="navbar-brand" href="/index.html">Garage Control</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/arearestrita">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Pessoas
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+            
+            <li><a class="dropdown-item" href="/listapessoas">Lista Pessoas</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/pessoas">Nova Pessoa</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/index.html">Produtos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/index.html">Manutenção</a>
+        </li>
+       </ul> 
+<!--       <form class="d-flex" role="search"> -->
+<!--         <input class="form-control me-1" type="search" placeholder="Digite para busca" aria-label="Search"> -->
+<!--         <button class="btn btn-outline-success" type="submit">Procurar</button> -->
+<!--       </form> -->
+       <ul class="nav justify-content-end">   
+         <li class="nav-item" >
+          <a class="nav-link active" href="/logout">Sair do Sistema</a>
+        </li>
+         </ul>
+    </div>
+  </div>
+</nav>
+    
+  
+<body onload="listaPessoas()">
+<br/>
+<!--     <div th:each = "m : ${msg}"> -->
+<!--         <span th:text = "${m}"> </span> -->
+<!--     </div> -->
+<br/>
+
+		<div class="row pesq-nav" >
+			<br /><br />
+				<form action="pesquisarpessoa" method="post" class="col s12" id="pesquisarpessoa">
+					<div class="row">
+						<div class="input-field col s3">
+							<label for="nomepesquisa" class="active">Pesquisa por nome:</label>
+								<input name="nomepesquisa" id="nomepesquisa" class="validate">
+								</div>
+								
+								<div class="input-field col s3">
+							<label for="pesqsexo" class="active">Pesquisa Gênero</label>
+						    <select	class="browser-default" name="pesqsexo" id="pesqsexo">
+								<option value="">-- Todos --</option>
+								<option value="MASCULINO">Masculino</option>
+								<option value="FEMININO">Feminino</option>
+							</select>
+							</div>
+								<div class="input-field col s3">
+								<input class="btn btn-success" type="submit" value="Buscar">
+								</div>
+								<div class="input-field col s3">
+								<input  class="btn btn-warning" type="submit"
+								 value="Imprimir PDF" onclick="document.getElementById('pesquisarpessoa').method='get'" >
+								 </div>
+								</div>
+							</form>
+						</div>
+
+<!-- <table class="table table-striped"> -->
+<div class="" style="height: 800px;overflow: scroll;">
+<table class="table table-striped" id="tabelaresultados">
+  <thead>
+    <tr>
+        <th>ID</th>
+		<th>Nome</th>
+		<th>CPF</th>
+		<th>Identidade</th>
+		<th>Sexo</th>
+		
+		<th>CEP</th>
+		<th>Rua</th>
+		<th>Número</th>
+		<th>Bairro</th>
+		<th>Complemento</th>
+		<th>Cidade</th>
+		<th>Estado</th>
+		<th>Editar</th>
+		<th>Excluir</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+   <tr th:each="pessoa : ${pessoas}">
+				<td th:text="${pessoa.id}"></td>
+				<td th:text="${pessoa.nome}"></td>
+				<td th:text="${pessoa.cpf}"></td>
+				<td th:text="${pessoa.identidade}"></td>	
+				<td th:text="${pessoa.sexopessoa}"></td>
+				<td th:text="${pessoa.cep}"></td>
+				<td th:text="${pessoa.rua}"></td>
+				<td th:text="${pessoa.numero}"></td>
+				<td th:text="${pessoa.bairro}"></td>
+				<td th:text="${pessoa.comp}"></td>
+				<td th:text="${pessoa.cidade}"></td>
+				<td th:text="${pessoa.uf}"></td>
+				<td><a
+					th:href="@{/update/{idpessoa}(idpessoa=${pessoa.id})}">Editar</a></td>
+				<td><a
+					th:href="@{/remove/{idpessoa}(idpessoa=${pessoa.id})}">Excluir</a>
+				</td>
+			</tr>
+  </tbody>
+</table>
+			</div>
+		
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+ <!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+
+<script type="text/javascript">
+
+function listaPessoas() {
+	
+		$.ajax({
+			method : "GET",
+			url : "/api/pessoas",
+//  			data : "nome=" + nome,
+			success : function(response) {
+ 			$('#tabelaresultados > tbody > tr').remove();
+
+			$("#id").val(response.id);
+
+			for (var i = 0; i < response.length; i++) {
+				$('#tabelaresultados > tbody')
+				.append(
+					'<tr id="'+response[i].id+'"><td>'
+							+ response[i].id
+							+ '</td><td>'
+							+ response[i].nome
+							+ '</td><td>'
+							+ response[i].cpf
+							+ '</td><td>'
+							+ response[i].rg
+							+ '</td><td>'
+							+ response[i].sexo
+							+ '</td><td>'
+							+ response[i].cep
+							+ '</td><td>'
+							+ response[i].rua
+							+ '</td><td>'
+							+ response[i].numero
+							+ '</td><td>'
+							+ response[i].bairro
+							+ '</td><td>'
+							+ response[i].comp
+							+ '</td><td>'
+							+ response[i].cidade
+							+ '</td><td>'
+							+ response[i].uf
+							+ '</td><td><button type="button" onclick="colocarEmEdicao('
+							+ response[i].id
+							+ ')" class="btn btn-primary">Ver</button></td><td><button type="button" class="btn btn-danger" onclick="deleteUser('
+							+ response[i].id
+							+ ')">Delete</button></td></tr>');
+					}
+
+						}
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Erro ao buscar pessoa: " + xhr.responseText);
+			});
+}
+
+
+function botaoDeletarDaTela(){
+	var id = $('#id').val();
+	
+	if(id != null && id.trim() != ''){
+	 deleteUser(id);
+	 document.getElementById('formCadastroPessoas').reset();
+	}
+}
+
+function apagaForm() {
+	document.getElementById("modalPesquisarUser").reset();
+	}
+
+
+function deleteUser(id){
+	
+	if(confirm('Deseja realmente deletar?')) {
+	
+	 $.ajax({
+			method : "DELETE",
+			url : "/api/pessoas/" + id,
+			data : "id=" + id ,
+			success : function(response) {
+				
+				//$('#'+ id).remove();
+			document.getElementById('formCadastroPessoas').reset();
+				alert("Registro Excluído com sucesso!");	  
+			}
+		}).fail(function(xhr, status, errorThrown) {
+			alert("Erro ao deletar pessoa por id: " + xhr.responseText);
+		});
+	}	
+}
+
+	function pesquisarPessoa() {
+		
+		
+		
+		var nome = $('#nameBusca').val();
+
+		if (nome != null && nome.trim() != '') {
+
+			$.ajax({
+				method : "GET",
+				url : "/api/pessoas/buscarPorNome",
+				data : "nome=" + nome,
+				success : function(response) {
+
+				$('#tabelaresultados > tbody > tr').remove();
+
+				$("#id").val(response.id);
+
+				for (var i = 0; i < response.length; i++) {
+					$('#tabelaresultados > tbody')
+					.append(
+						'<tr id="'+response[i].id+'"><td>'
+								+ response[i].id
+								+ '</td><td>'
+								+ response[i].nome
+								+ '</td><td>'
+								+ response[i].cpf
+								+ '</td><td>'
+								+ response[i].rg
+								+ '</td><td>'
+								+ response[i].sexo
+								+ '</td><td>'
+								+ response[i].cep
+								+ '</td><td>'
+								+ response[i].rua
+								+ '</td><td>'
+								+ response[i].numero
+								+ '</td><td>'
+								+ response[i].bairro
+								+ '</td><td>'
+								+ response[i].comp
+								+ '</td><td>'
+								+ response[i].cidade
+								+ '</td><td>'
+								+ response[i].uf
+								+ '</td><td><button type="button" onclick="colocarEmEdicao('
+								+ response[i].id
+								+ ')" class="btn btn-primary">Ver</button></td><td><button type="button" class="btn btn-danger" onclick="deleteUser('
+								+ response[i].id
+								+ ')">Delete</button></td></tr>');
+						}
+
+							}
+						}).fail(function(xhr, status, errorThrown) {
+					alert("Erro ao buscar Pessoa: " + xhr.responseText);
+				});
+
+		}
+	}
+
+	function colocarEmEdicao(id) {
+
+		$.ajax({
+			method : "GET",
+			url : "/api/pessoas/" + id,
+			data : "id=" + id,
+			success : function(response) {
+
+				$("#id").val(response.id);
+				$("#nome").val(response.nome);
+				$("#cpf").val(response.cpf);
+				$("#rg").val(response.rg);
+				$("#sexo").val(response.sexo);
+				$("#cep").val(response.cep);
+				$("#rua").val(response.rua);
+				$("#numero").val(response.numero);
+				$("#bairro").val(response.bairro);
+				$("#comp").val(response.comp);
+				$("#cidade").val(response.cidade);
+				$("#uf").val(response.uf);
+
+				$('#modalPesquisarUser').modal('hide');
+				apagaForm();
+			}
+		}).fail(function(xhr, status, errorThrown) {
+			alert("Erro ao buscar pessoa por id: " + xhr.responseText);
+		});
+
+	}
+
+	function salvarPessoa() {
+
+		var id = $("#id").val();
+		var nome = $("#nome").val();
+		var cpf = $("#cpf").val();
+		var rg = $("#rg").val();
+		var sexo = $("#sexo").val();
+		var cep = $("#cep").val();
+		var rua = $("#rua").val();
+		var numero = $("#numero").val();
+		var bairro = $("#bairro").val();
+		var comp = $("#comp").val();
+		var cidade = $("#cidade").val();
+		var uf = $("#uf").val();
+
+		if (nome == null || nome != null && nome.trim() == '') {
+			$("#nome").focus();
+			alert('Informe o nome');
+			return;
+		}
+
+		if (cpf == null || cpf != null && cpf.trim() == '') {
+			$("#cpf").focus();
+			alert('Informe o CPF');
+			return;
+		}
+
+		$.ajax({
+			method : "POST",
+			url : "/api/pessoas/salvar",
+			data : JSON.stringify({
+				id : id,
+				nome : nome,
+				cpf : cpf,
+				rg : rg,
+				sexo : sexo,
+				cep : cep,
+				rua : rua,
+				numero : numero,
+				bairro : bairro,
+				comp : comp,
+				cidade : cidade,
+				uf : uf
+			}),
+			contentType : "application/json; charset=utf-8",
+			success : function(response) {
+				$("#id").val(response.id);
+				alert("Gravou com sucesso!");
+			}
+
+		}).fail(function(xhr, status, errorThrown) {
+			alert("Erro ao salvar pessoa: " + xhr.responseText);
+		});
+
+	}
+</script>
+
+	
+</body>
+</html>
